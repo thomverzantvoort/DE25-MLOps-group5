@@ -56,3 +56,20 @@ In the notebook we have 4 models to choose from:
 - Decision Tree (highest recall)
 - Random Forest
 - XGBoost (best balanced)
+
+## Tasks
+
+### Asisgnment (Code)
+
+- MLOpsPipeline (Notebook)
+- Setup Google Cloud Project
+- CI/CD Pipeline
+- Connecting parts together
+- Application (Prediction UI)
+- Application (Prediction API)
+
+### Report
+
+- Overview of the ML Application
+- Design and Implementation of the MLOps System
+- Reflection on the Design and Implementation of the MLOps System
