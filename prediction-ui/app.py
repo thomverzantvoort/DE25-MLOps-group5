@@ -31,8 +31,9 @@ def check_churn():
 
         # Read predictions from API response
         predictions = res.json()
-        lr_pred = predictions["logistic_regression"][0]
-        rf_pred = predictions["random_forest"][0]
+        lr_pred = predictions["logistic_regression_prediction"][0]
+        rf_pred = predictions["random_forest_prediction"][0]
+
 
 
         # For simplicity, combine both
