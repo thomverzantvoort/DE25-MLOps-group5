@@ -14,20 +14,17 @@ def check_churn():
         return render_template("input_form_page.html")
 
     elif request.method == "POST":
-        # ✅ Build input data from form using correct feature names (matching the trained model)
+        # ✅ Only include features your model was trained on
         prediction_input = [
-    {
-        "age": int(request.form.get("age")),
-        "listening_time": float(request.form.get("listening_time")),
-        "songs_played_per_day": float(request.form.get("songs_played_per_day")),
-        "skip_rate": float(request.form.get("skip_rate")),
-        "ads_listened_per_week": float(request.form.get("ads_listened_per_week")),
-        "gender_Male": int(request.form.get("gender_Male")),
-        "country_US": int(request.form.get("country_US")),
-        "subscription_type_Premium": int(request.form.get("subscription_type_Premium")),
-        "device_type_Mobile": int(request.form.get("device_type_Mobile"))
-    }
-]
+            {
+                "age": int(request.form.get("age")),
+                "listening_time": float(request.form.get("listening_time")),
+                "songs_played_per_day": float(request.form.get("songs_played_per_day")),
+                "skip_rate": float(request.form.get("skip_rate")),
+                "ads_listened_per_week": float(request.form.get("ads_listened_per_week"))
+            }
+        ]
+
 
         app.logger.debug("Prediction input: %s", prediction_input)
 
