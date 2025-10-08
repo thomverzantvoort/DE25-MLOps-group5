@@ -16,29 +16,18 @@ def check_churn():
     elif request.method == "POST":
         # ✅ Build input data from form using correct feature names (matching the trained model)
         prediction_input = [
-            {
-                "age": int(request.form.get("age")),
-                "listening_time": float(request.form.get("listening_time")),
-                "songs_played_per_day": float(request.form.get("songs_played_per_day")),
-                "skip_rate": float(request.form.get("skip_rate")),
-                "ads_listened_per_week": float(request.form.get("ads_listened_per_week")),
-                "gender_Male": int(request.form.get("gender_Male")),
-                # Set all categorical one-hot features (most will be 0)
-                "gender_Other": 0,
-                "country_CA": 0,
-                "country_DE": 0,
-                "country_FR": 0,
-                "country_IN": 0,
-                "country_PK": 0,
-                "country_UK": 0,
-                "country_US": int(request.form.get("country_US")),
-                "subscription_type_Free": 0,
-                "subscription_type_Premium": int(request.form.get("subscription_type_Premium")),
-                "subscription_type_Student": 0,
-                "device_type_Mobile": int(request.form.get("device_type_Mobile")),
-                "device_type_Web": 0
-            }
-        ]
+    {
+        "age": int(request.form.get("age")),
+        "listening_time": float(request.form.get("listening_time")),
+        "songs_played_per_day": float(request.form.get("songs_played_per_day")),
+        "skip_rate": float(request.form.get("skip_rate")),
+        "ads_listened_per_week": float(request.form.get("ads_listened_per_week")),
+        "gender_Male": int(request.form.get("gender_Male")),
+        "country_US": int(request.form.get("country_US")),
+        "subscription_type_Premium": int(request.form.get("subscription_type_Premium")),
+        "device_type_Mobile": int(request.form.get("device_type_Mobile"))
+    }
+]
 
         app.logger.debug("Prediction input: %s", prediction_input)
 
