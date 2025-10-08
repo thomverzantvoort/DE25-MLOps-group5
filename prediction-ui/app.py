@@ -6,6 +6,7 @@ import requests
 from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
 
 @app.route('/checkchurn', methods=["GET", "POST"])
 def check_churn():
@@ -13,30 +14,53 @@ def check_churn():
         return render_template("input_form_page.html")
 
     elif request.method == "POST":
-        # Build input data from form
+        # ✅ Build input data from form using correct feature names (matching the trained model)
         prediction_input = [
             {
                 "age": int(request.form.get("age")),
-                "subscription_length": int(request.form.get("subscription_length")),
-                "plays_per_day": int(request.form.get("plays_per_day")),
-                "gender_Male": int(request.form.get("gender_Male"))
+                "listening_time": float(request.form.get("listening_time")),
+                "songs_played_per_day": float(request.form.get("songs_played_per_day")),
+                "skip_rate": float(request.form.get("skip_rate")),
+                "ads_listened_per_week": float(request.form.get("ads_listened_per_week")),
+                "gender_Male": int(request.form.get("gender_Male")),
+                # Set all categorical one-hot features (most will be 0)
+                "gender_Other": 0,
+                "country_CA": 0,
+                "country_DE": 0,
+                "country_FR": 0,
+                "country_IN": 0,
+                "country_PK": 0,
+                "country_UK": 0,
+                "country_US": int(request.form.get("country_US")),
+                "subscription_type_Free": 0,
+                "subscription_type_Premium": int(request.form.get("subscription_type_Premium")),
+                "subscription_type_Student": 0,
+                "device_type_Mobile": int(request.form.get("device_type_Mobile")),
+                "device_type_Web": 0
             }
         ]
 
-        app.logger.debug("Prediction input : %s", prediction_input)
+        app.logger.debug("Prediction input: %s", prediction_input)
 
-        # Get API URL from environment variable (set in Docker)
+        # ✅ Get API URL from environment variable (set in Docker)
         predictor_api_url = os.environ['PREDICTOR_API']
+        app.logger.debug("Sending request to Predictor API: %s", predictor_api_url)
+
+        # ✅ Send request to prediction API
         res = requests.post(predictor_api_url, json=json.loads(json.dumps(prediction_input)))
 
-        # Read predictions from API response
+        if res.status_code != 200:
+            app.logger.error("Prediction API returned error: %s", res.text)
+            return jsonify(error="Prediction API error", details=res.text), res.status_code
+
+        # ✅ Parse predictions from API response
         predictions = res.json()
+        app.logger.debug("Prediction response: %s", predictions)
+
         lr_pred = predictions["logistic_regression_prediction"][0]
         rf_pred = predictions["random_forest_prediction"][0]
 
-
-
-        # For simplicity, combine both
+        # ✅ Combine predictions logically
         churn_status = True if (lr_pred == 1 or rf_pred == 1) else False
 
         return render_template("response_page.html", churn_variable=churn_status)
