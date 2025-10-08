@@ -62,3 +62,17 @@ joblib.dump(lr_model, "models/model_lr.pkl")
 joblib.dump(rf_model, "models/model_rf.pkl")
 joblib.dump(scaler, "models/scaler.pkl")
 print("✅ Models and scaler saved to training-api/models/")
+
+
+# training-api/train.py
+# (everything from before...)
+
+def main():
+    # You can return model metrics to show in the API response
+    return {
+        "logistic_regression_accuracy": round(accuracy_score(y_test, y_pred_lr), 3),
+        "random_forest_accuracy": round(accuracy_score(y_test, y_pred_rf), 3)
+    }
+
+if __name__ == "__main__":
+    main()

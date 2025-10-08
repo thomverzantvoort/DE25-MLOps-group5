@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Spotify Churn Result</title>
+</head>
+<body>
+
+{% if churn_variable == true %}
+    <h2>⚠️ The user is likely to CHURN (cancel subscription).</h2>
+{% else %}
+    <h2>🎵 The user is likely to STAY with Spotify!</h2>
+{% endif %}
+
+<a href="/checkchurn">Try another prediction</a>
+
+</body>
+</html>
