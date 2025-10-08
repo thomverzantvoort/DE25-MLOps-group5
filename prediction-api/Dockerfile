@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ---------- Copy All Files ----------
 COPY . .
 
+# ✅ Copy trained models from the parent 'models' folder on your host
+COPY ../models ./models
+
 # ---------- Expose Port ----------
 EXPOSE 5000
 
