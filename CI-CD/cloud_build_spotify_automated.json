@@ -4,8 +4,8 @@
       "name": "gcr.io/cloud-builders/gsutil",
       "args": [
         "cp",
-        "gs://${_MODEL_REPO}/spotify_models/*",              // 🟩 Copy your trained Spotify models
-        "./prediction-api/models/"                           // 🟩 Adjusted path to match your repo structure
+        "gs://${_MODEL_REPO}/spotify_models/*",
+        "./prediction-api/models/"
       ]
     },
     {
@@ -13,8 +13,8 @@
       "args": [
         "build",
         "-t",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1",  // 🟩 Changed image name
-        "./prediction-api"                                                                      // 🟩 Correct directory
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1",
+        "./prediction-api"
       ]
     },
     {
@@ -22,22 +22,22 @@
       "args": [
         "build",
         "-t",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1",   // 🟩 Changed image name
-        "./prediction-ui"                                                                       // 🟩 Correct directory
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1",
+        "./prediction-ui"
       ]
     },
     {
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "push",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1"   // 🟩 Changed image name
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1"
       ]
     },
     {
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "push",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1"    // 🟩 Changed image name
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1"
       ]
     },
     {
@@ -46,9 +46,9 @@
       "args": [
         "run",
         "deploy",
-        "spotify-prediction-api",                          // 🟩 Renamed service
+        "spotify-prediction-api",
         "--image",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1",  // 🟩 Updated reference
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1",
         "--region",
         "us-central1",
         "--platform",
@@ -84,7 +84,7 @@
       "entrypoint": "/bin/sh",
       "args": [
         "-c",
-        "gcloud run deploy spotify-prediction-ui --image ${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/spotify-prediction-ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/predict/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"  // 🟩 Updated environment variable + endpoint
+        "gcloud run deploy spotify-prediction-ui --image ${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/spotify-prediction-ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/predict/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
       ],
       "waitFor": ["api-url-extraction"]
     }
