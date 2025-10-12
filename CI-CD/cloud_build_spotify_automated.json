@@ -1,14 +1,6 @@
 {
   "steps": [
     {
-      "name": "gcr.io/cloud-builders/gsutil",
-      "args": [
-        "cp",
-        "gs://${_MODEL_REPO}/spotify_models/*",
-        "./prediction-api/models/"
-      ]
-    },
-    {
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "build",
@@ -60,41 +52,33 @@
         "--memory",
         "4G",
         "--allow-unauthenticated"
-      ],
-      "id": "spotify-prediction-api-deploy"
-    },
-    {
-      "name": "ubuntu",
-      "args": ["sleep", "60"],
-      "waitFor": ["spotify-prediction-api-deploy"],
-      "id": "sleep-delay"
+      ]
     },
     {
       "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
-      "entrypoint": "/bin/sh",
+      "entrypoint": "gcloud",
       "args": [
-        "-c",
-        "gcloud run services list --platform managed | grep https: | head -1 | awk '{print $4}' > /workspace/api_url.text"
-      ],
-      "waitFor": ["sleep-delay"],
-      "id": "api-url-extraction"
-    },
-    {
-      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
-      "entrypoint": "/bin/sh",
-      "args": [
-        "-c",
-        "gcloud run deploy spotify-prediction-ui --image ${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/spotify-prediction-ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/predict/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
-      ],
-      "waitFor": ["api-url-extraction"]
+        "run",
+        "deploy",
+        "spotify-prediction-ui",
+        "--image",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1",
+        "--region",
+        "us-central1",
+        "--platform",
+        "managed",
+        "--port",
+        "5000",
+        "--cpu",
+        "2",
+        "--memory",
+        "4G",
+        "--set-env-vars",
+        "PREDICTOR_API=todo",
+        "--allow-unauthenticated"
+      ]
     }
   ],
-  "artifacts": {
-    "objects": {
-      "location": "gs://${_TEMP_REPO}/",
-      "paths": ["/workspace/api_url.text"]
-    }
-  },
   "options": {
     "logging": "CLOUD_LOGGING_ONLY"
   }
