@@ -24,12 +24,14 @@ selected_features = [
     "listening_time",
     "songs_played_per_day",
     "skip_rate",
-    "ads_listened_per_week"
+    "ads_listened_per_week",
 ]
 target_col = "is_churned"
 
 # make sure they exist in your data
-missing = [col for col in selected_features + [target_col] if col not in df_model.columns]
+missing = [
+    col for col in selected_features + [target_col] if col not in df_model.columns
+]
 if missing:
     raise KeyError(f"❌ Missing columns in dataset: {missing}")
 
@@ -37,7 +39,9 @@ X = df_model[selected_features]
 y = df_model[target_col]
 
 # --- 4. Train/Test Split ---
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # --- 5. Standard Scaling ---
 scaler = StandardScaler()
@@ -46,7 +50,7 @@ X_test = pd.DataFrame(scaler.transform(X_test), columns=selected_features)
 print("✅ Features scaled successfully.")
 
 # --- 6. Train Logistic Regression ---
-lr_model = LogisticRegression(max_iter=500, class_weight='balanced')
+lr_model = LogisticRegression(max_iter=500, class_weight="balanced")
 lr_model.fit(X_train, y_train)
 y_pred_lr = lr_model.predict(X_test)
 print("\n🔹 Logistic Regression Accuracy:", accuracy_score(y_test, y_pred_lr))
@@ -66,11 +70,13 @@ joblib.dump(rf_model, "models/model_rf.pkl")
 joblib.dump(scaler, "models/scaler.pkl")
 print("✅ Models and scaler saved to training-api/models/")
 
+
 def main():
     return {
         "logistic_regression_accuracy": round(accuracy_score(y_test, y_pred_lr), 3),
-        "random_forest_accuracy": round(accuracy_score(y_test, y_pred_rf), 3)
+        "random_forest_accuracy": round(accuracy_score(y_test, y_pred_rf), 3),
     }
+
 
 if __name__ == "__main__":
     main()
