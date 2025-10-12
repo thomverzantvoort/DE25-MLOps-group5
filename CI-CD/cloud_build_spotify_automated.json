@@ -6,7 +6,7 @@
         "build",
         "-t",
         "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-api:0.0.1",
-        "./prediction-api"
+        "./prediction_api"
       ]
     },
     {
@@ -15,7 +15,7 @@
         "build",
         "-t",
         "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/spotify-prediction-ui:0.0.1",
-        "./prediction-ui"
+        "./prediction_ui"
       ]
     },
     {
