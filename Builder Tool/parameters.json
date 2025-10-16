@@ -1,0 +1,7 @@
+{
+  "project_id": "de2025-471807",
+  "data_bucket": "spotify_data_25",
+  "trainset_filename": "training_set.csv",
+  "testset_filename": "prediction_set.csv", 
+  "model_repo": "spotify_models"
+}
