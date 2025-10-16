@@ -1,0 +1,38 @@
+{
+  "steps": [
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/cloud-build-app-mpl-automated/pipeline-executor:0.0.1",
+        "./builder_tool"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/cloud-build-app-mpl-automated/pipeline-executor:0.0.1"
+      ]
+    },
+    {
+      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+      "entrypoint": "/bin/sh",
+      "args": [
+        "-c",
+        "docker run --rm -v $PWD/pipeline/parameters:/app/pipeline/parameters -e GOOGLE_APPLICATION_CREDENTIALS=/workspace/key.json us-central1-docker.pkg.dev/$PROJECT_ID/cloud-build-app-mpl-automated/pipeline-executor:0.0.1 --name=spotify-churn-lr --pipeline_def=pipeline/build/spotify_churn_pipeline.json --pipeline_root=gs://spotify_temp/pipeline_root --parameter_dict=pipeline/parameters/spotify_params.json"
+      ]
+    }
+  ],
+  "substitutions": {
+    "_LOCATION": "us-central1",
+    "_REPOSITORY": "cloud-build-app-mpl-automated",
+    "_DATA_REPO": "spotify_data_25",
+    "_MODEL_REPO": "spotify_models",
+    "_TEMP_REPO": "spotify_temp"
+  },
+  "options": {
+    "logging": "CLOUD_LOGGING_ONLY"
+  }
+}
