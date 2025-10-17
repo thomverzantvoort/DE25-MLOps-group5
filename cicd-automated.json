@@ -1,0 +1,131 @@
+{
+    "steps": [
+        {
+            "name": "gcr.io/cloud-builders/gsutil",
+            "args": [
+                "-m",
+                "cp",
+                "gs://${_MODEL_REPO}/*.pkl",
+                "./prediction-api/models/"
+            ],
+            "id": "download-models"
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction-api-spotify-churn:0.0.1",
+                "./prediction-api"
+            ],
+            "waitFor": [
+                "download-models"
+            ],
+            "id": "build-prediction-api"
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction-ui-spotify-churn:0.0.1",
+                "./prediction-ui"
+            ],
+            "id": "build-prediction-ui"
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction-api-spotify-churn:0.0.1"
+            ],
+            "waitFor": [
+                "build-prediction-api"
+            ],
+            "id": "push-prediction-api"
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction-ui-spotify-churn:0.0.1"
+            ],
+            "waitFor": [
+                "build-prediction-ui"
+            ],
+            "id": "push-prediction-ui"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "prediction-api-spotify-churn",
+                "--image",
+                "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction-api-spotify-churn:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated"
+            ],
+            "waitFor": [
+                "push-prediction-api"
+            ],
+            "id": "deploy-prediction-api"
+        },
+        {
+            "name": "ubuntu",
+            "args": [
+                "sleep",
+                "60"
+            ],
+            "waitFor": [
+                "deploy-prediction-api"
+            ],
+            "id": "sleep-delay"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "/bin/sh",
+            "args": [
+                "-c",
+                "gcloud run services describe prediction-api-spotify-churn --region=us-central1 --format='value(status.url)' > /workspace/api_url.txt"
+            ],
+            "waitFor": [
+                "sleep-delay"
+            ],
+            "id": "extract-api-url"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "/bin/sh",
+            "args": [
+                "-c",
+                "gcloud run deploy prediction-ui-spotify-churn --image ${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/prediction-ui-spotify-churn:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.txt)/predict/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
+            ],
+            "waitFor": [
+                "extract-api-url",
+                "push-prediction-ui"
+            ]
+        }
+    ],
+    "artifacts": {
+        "objects": {
+            "location": "gs://${_TEMP_REPO}/",
+            "paths": [
+                "/workspace/api_url.txt"
+            ]
+        }
+    },
+    "options": {
+        "logging": "CLOUD_LOGGING_ONLY"
+    }
+}

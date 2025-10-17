@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>Spotify Churn Prediction</title>
+</head>
+<body>
+<form action="/checkchurn" method="post">
+  <label>Age:</label>
+  <input type="number" name="age"><br>
+
+  <label>Listening Time:</label>
+  <input type="number" name="listening_time"><br>
+
+  <label>Songs Played per Day:</label>
+  <input type="number" name="songs_played_per_day"><br>
+
+  <label>Skip Rate:</label>
+  <input type="number" name="skip_rate"><br>
+
+  <label>Ads Listened per Week:</label>
+  <input type="number" name="ads_listened_per_week"><br>
+
+  <input type="submit" value="Predict Churn">
+</form>
+</body>
+</html>
