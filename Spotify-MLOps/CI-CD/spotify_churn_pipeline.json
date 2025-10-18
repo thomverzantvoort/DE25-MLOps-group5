@@ -51,5 +51,8 @@
     "_MODEL_REPO": "spotify-models",
     "_DATA_BUCKET": "spotify-data-bucket"
   },
+  "options": {
+    "logging": "CLOUD_LOGGING_ONLY"
+  },
   "timeout": "3600s"
 }
