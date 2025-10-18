@@ -55,9 +55,9 @@
   ],
   "substitutions": {
     "_LOCATION": "us-central1",
-    "_REPOSITORY": "mlops-artifacts",
+    "_REPOSITORY": "mlops",
     "_MODEL_REPO": "spotify-models",
-    "_CONF_REPO": "spotify-config"
+    "_CONF_REPO": "spotify_data_25"
   },
   "options": {
     "logging": "CLOUD_LOGGING_ONLY"
