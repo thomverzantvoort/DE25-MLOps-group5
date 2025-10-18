@@ -32,24 +32,32 @@
       "id": "build-prediction-ui"
     },
     {
-      "name": "gcr.io/cloud-builders/gcloud",
+      "name": "gcr.io/cloud-builders/gsutil",
       "args": [
-        "ai", "pipelines", "run",
-        "--project=$PROJECT_ID",
-        "--region=${_LOCATION}",
-        "--pipeline-name=spotify-churn-training",
-        "--parameter-values",
-        "dataset_path=gs://${_DATA_BUCKET}/spotify_churn_dataset.csv"
+        "cp",
+        "gs://${_CONF_REPO}/parameters_spotify.json",
+        "."
       ],
-      "waitFor": ["build-prediction-api", "build-prediction-ui"],
-      "id": "run-vertex-pipeline"
+      "id": "download-parameters",
+      "waitFor": ["build-prediction-api", "build-prediction-ui"]
+    },
+    {
+      "name": "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.1",
+      "args": [
+        "--name=spotify-churn-training",
+        "--pipeline_def=./Spotify-MLOps/ML-pipeline/spotify_churn_pipeline.yaml",
+        "--pipeline_root=gs://${_MODEL_REPO}/pipeline_root",
+        "--parameter_dict=./parameters_spotify.json"
+      ],
+      "id": "run-vertex-pipeline",
+      "waitFor": ["download-parameters"]
     }
   ],
   "substitutions": {
     "_LOCATION": "us-central1",
     "_REPOSITORY": "mlops-artifacts",
     "_MODEL_REPO": "spotify-models",
-    "_DATA_BUCKET": "spotify-data-bucket"
+    "_CONF_REPO": "spotify-config"
   },
   "options": {
     "logging": "CLOUD_LOGGING_ONLY"

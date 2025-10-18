@@ -1,0 +1,6 @@
+{
+  "project_id": "de2025-471807",
+  "data_bucket": "spotify_data_25",
+  "dataset_filename": "spotify_churn_dataset.csv",
+  "model_repo": "spotify_models"
+}
