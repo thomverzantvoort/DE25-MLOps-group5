@@ -4,8 +4,9 @@
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "build",
+        "--no-cache",
         "-t",
-        "us-central1-docker.pkg.dev/$PROJECT_ID/mlops/pipeline-executor:0.0.1",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/mlops/pipeline-executor:0.0.2",
         "./Spotify-MLOps/builder_tool"
       ]
     },
@@ -13,7 +14,7 @@
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "push",
-        "us-central1-docker.pkg.dev/$PROJECT_ID/mlops/pipeline-executor:0.0.1"
+        "us-central1-docker.pkg.dev/$PROJECT_ID/mlops/pipeline-executor:0.0.2"
       ]
     }
   ],

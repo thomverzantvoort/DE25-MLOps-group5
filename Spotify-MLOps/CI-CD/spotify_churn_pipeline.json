@@ -42,7 +42,7 @@
       "waitFor": ["build-prediction-api", "build-prediction-ui"]
     },
     {
-      "name": "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.1",
+      "name": "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.2",
       "args": [
         "--name=spotify-churn-training",
         "--pipeline_def=./Spotify-MLOps/ML-pipeline/spotify_churn_pipeline.yaml",
@@ -56,7 +56,7 @@
   "substitutions": {
     "_LOCATION": "us-central1",
     "_REPOSITORY": "mlops",
-    "_MODEL_REPO": "spotify-models",
+    "_MODEL_REPO": "spotify_models",
     "_CONF_REPO": "spotify_data_25"
   },
   "options": {
