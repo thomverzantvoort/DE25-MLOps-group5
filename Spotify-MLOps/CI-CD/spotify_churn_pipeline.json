@@ -45,9 +45,9 @@
       "name": "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.2",
       "args": [
         "--name=spotify-churn-training",
-        "--pipeline_def=./Spotify-MLOps/ML-pipeline/spotify_churn_pipeline.yaml",
+        "--pipeline_def=./Spotify-MLOps/CI-CD/spotify_churn_pipeline.yaml",
         "--pipeline_root=gs://${_MODEL_REPO}/pipeline_root",
-        "--parameter_dict=./parameters_spotify.json"
+        "--parameter_dict=./Spotify-MLOps/CI-CD/parameters_spotify.json"
       ],
       "id": "run-vertex-pipeline",
       "waitFor": ["download-parameters"]
