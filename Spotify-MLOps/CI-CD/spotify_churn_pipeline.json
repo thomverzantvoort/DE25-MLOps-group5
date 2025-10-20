@@ -47,7 +47,7 @@
         "--name=spotify-churn-training",
         "--pipeline_def=./Spotify-MLOps/CI-CD/spotify_churn_pipeline.yaml",
         "--pipeline_root=gs://${_MODEL_REPO}/pipeline_root",
-        "--parameter_dict=./Spotify-MLOps/CI-CD/parameters_spotify.json"
+        "--parameter_dict=./Spotify-MLOps/CI-CD/parameters.json"
       ],
       "id": "run-vertex-pipeline",
       "waitFor": ["download-parameters"]
