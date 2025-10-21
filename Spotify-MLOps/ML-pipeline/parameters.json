@@ -1,0 +1,6 @@
+{
+  "project_id": "agile-producer-471907-s7",
+  "data_bucket": "data_spotify_2038050",
+  "dataset_filename": "spotify_churn_dataset.csv",
+  "model_repo": "models_spotify_2038050"
+}
