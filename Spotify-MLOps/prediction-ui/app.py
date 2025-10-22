@@ -50,11 +50,8 @@ def check_churn():
         predictions = res.json()
         app.logger.debug("Prediction response: %s", predictions)
 
-        lr_pred = predictions["logistic_regression_prediction"][0]
-        rf_pred = predictions["random_forest_prediction"][0]
-
-        # ✅ Combine predictions logically
-        churn_status = True if (lr_pred == 1 or rf_pred == 1) else False
+        # ✅ Get single predictioncally
+        churn_status = bool(predictions["predictions"][0])
 
         return render_template("response_page.html", churn_variable=churn_status)
 
