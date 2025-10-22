@@ -552,7 +552,7 @@ deploymentSpec:
           \ y_pred)\n\n    metrics_dict = {\n        \"train_accuracy\": float(train_accuracy),\n\
           \        \"train_f1_score\": float(train_f1)\n    }\n    logging.info(f\"\
           LR Training Metrics: {metrics_dict}\")\n\n    # Save model\n    model_out.metadata[\"\
-          file_type\"] = \".pkl\"\n    model_out.metadata[\"algo\"] = \"model_lr\"\
+          file_type\"] = \".pkl\"\n    model_out.metadata[\"algo\"] = \"best_model\"\
           \n    joblib.dump(model, model_out.path + \".pkl\")\n\n    outputs = NamedTuple('outputs',\
           \ metrics=dict)\n    return outputs(metrics_dict)\n\n"
         image: python:3.10.7-slim
@@ -598,7 +598,7 @@ deploymentSpec:
           \ y_pred)\n\n    metrics_dict = {\n        \"train_accuracy\": float(train_accuracy),\n\
           \        \"train_f1_score\": float(train_f1)\n    }\n    logging.info(f\"\
           RF Training Metrics: {metrics_dict}\")\n\n    # Save model\n    model_out.metadata[\"\
-          file_type\"] = \".pkl\"\n    model_out.metadata[\"algo\"] = \"model_rf\"\
+          file_type\"] = \".pkl\"\n    model_out.metadata[\"algo\"] = \"best_model\"\
           \n    joblib.dump(model, model_out.path + \".pkl\")\n\n    outputs = NamedTuple('outputs',\
           \ metrics=dict)\n    return outputs(metrics_dict)\n\n"
         image: python:3.10.7-slim
