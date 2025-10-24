@@ -1,25 +1,169 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Churn Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(180deg, #191414 0%, #121212 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #1DB954 0%, #1ed760 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #1DB954;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .submit-btn:hover {
+            background: #1ed760;
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(29, 185, 84, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .info-text {
+            text-align: center;
+            color: #b3b3b3;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<form action="/checkchurn" method="post">
-  <label>Age:</label>
-  <input type="number" name="age"><br>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Spotify</h1>
+            <p>Churn Prediction System</p>
+        </div>
 
-  <label>Listening Time:</label>
-  <input type="number" name="listening_time"><br>
+        <div class="form-card">
+            <form action="/checkchurn" method="post">
+                <div class="form-group">
+                    <label for="age">👤 Age</label>
+                    <input type="number" id="age" name="age" placeholder="Enter age" required step="1">
+                </div>
 
-  <label>Songs Played per Day:</label>
-  <input type="number" name="songs_played_per_day"><br>
+                <div class="form-group">
+                    <label for="listening_time">⏱️ Listening Time (hours)</label>
+                    <input type="number" id="listening_time" name="listening_time" placeholder="Enter listening time" required step="0.1">
+                </div>
 
-  <label>Skip Rate:</label>
-  <input type="number" name="skip_rate"><br>
+                <div class="form-group">
+                    <label for="songs_played_per_day">🎶 Songs Played per Day</label>
+                    <input type="number" id="songs_played_per_day" name="songs_played_per_day" placeholder="Enter songs per day" required step="0.1">
+                </div>
 
-  <label>Ads Listened per Week:</label>
-  <input type="number" name="ads_listened_per_week"><br>
+                <div class="form-group">
+                    <label for="skip_rate">⏭️ Skip Rate (%)</label>
+                    <input type="number" id="skip_rate" name="skip_rate" placeholder="Enter skip rate" required step="0.01">
+                </div>
 
-  <input type="submit" value="Predict Churn">
-</form>
+                <div class="form-group">
+                    <label for="ads_listened_per_week">📢 Ads Listened per Week</label>
+                    <input type="number" id="ads_listened_per_week" name="ads_listened_per_week" placeholder="Enter ads per week" required step="1">
+                </div>
+
+                <button type="submit" class="submit-btn">Predict Churn</button>
+
+                <p class="info-text">Powered by group 5</p>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
