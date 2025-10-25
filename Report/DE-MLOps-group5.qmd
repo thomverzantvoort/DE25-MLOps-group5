@@ -98,9 +98,9 @@ This component forms the operational link between Cloud Build automation and Ver
 
 ### **Alternative Designs**
 
-Several alternative designs could have been applied to improve modularity and scalability. One option would be to serve the trained model through Vertex AI Endpoints instead of a containerized Flask API on Cloud Run. Vertex AI Endpoints provide a managed serving environment that handles scaling, versioning, and monitoring automatically, which reduces operational overhead (Ranasinghe, 2021). However, this approach limits flexibility in defining custom preprocessing, authentication, or multi-model routing logic. By contrast, the Flask API on Cloud Run offers full control over request handling and integration with the Prediction UI, at the cost of higher maintenance effort.
+Several alternative designs could have been applied to improve modularity and scalability. One option would be to serve the trained model through Vertex AI Endpoints instead of a containerized Flask API on Cloud Run. Vertex AI Endpoints provide a managed serving environment that handles scaling, versioning, and monitoring automatically, which reduces operational overhead (Datatonic, 2022; Google Cloud, 2024). However, this approach limits flexibility in defining custom preprocessing, authentication, or multi-model routing logic. By contrast, the Flask API on Cloud Run offers full control over request handling and integration with the Prediction UI, at the cost of higher maintenance effort.
 
-Another potential improvement would be to separate the training and deployment triggers in Cloud Build. This strategy would shorten build time and allow independent retraining or redeployment of individual components. It also aligns with recommended MLOps best practices, where conditional deployment is performed only when the newly trained model outperforms the existing one (Google Cloud, 2024).
+The current design already incorporates conditional logic within the Vertex AI pipeline, ensuring that newly trained models are deployed only if they outperform the current production model. This approach safeguards against performance degradation and reflects recommended practices for continuous deployment in machine learning systems (Google Cloud, 2024). While this evaluation logic resides inside the pipeline, separating Cloud Build triggers for training and deployment could further improve modularity and reduce runtime complexity by allowing independent updates to either process (Datatonic, 2022; Google Cloud, 2024).
 
 ### **Improvements and Scalability**
 
@@ -142,11 +142,11 @@ ChatGPT was used strictly as a supportive assistant, not as a content generator.
 
 ## References
 
+Datatonic. (2022). *Deploying machine learning models on Google Cloud.* Retrieved October 25, 2025, from https://datatonic.com/insights/deploying-machine-learning-models-google-cloud/
+
 Google Cloud. (2024). MLOps: Continuous delivery and automation pipelines in machine learning. Retrieved from https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
 
 Lauraalonso. (2025, 28 september). Spotify 2025 - EDA + prediction models. Kaggle. https://www.kaggle.com/code/lauraalonso/spotify-2025-eda-prediction-models/input
-
-Ranasinghe, H. (2021). Deploying powerful machine learning models on Google Cloud. Datatonic. Retrieved from https://datatonic.com/insights/deploying-machine-learning-models-google-cloud/
 
 ## Appendix
 
