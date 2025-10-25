@@ -18,7 +18,357 @@ components:
       parameters:
         Output:
           parameterType: STRING
+  comp-compare-with-baseline:
+    executorLabel: exec-compare-with-baseline
+    inputDefinitions:
+      parameters:
+        baseline_status:
+          parameterType: STRING
+        metric_name:
+          defaultValue: test_f1_score
+          isOptional: true
+          parameterType: STRING
+        new_model_metrics:
+          parameterType: STRUCT
+        production_metrics:
+          parameterType: STRUCT
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-compare-with-baseline-2:
+    executorLabel: exec-compare-with-baseline-2
+    inputDefinitions:
+      parameters:
+        baseline_status:
+          parameterType: STRING
+        metric_name:
+          defaultValue: test_f1_score
+          isOptional: true
+          parameterType: STRING
+        new_model_metrics:
+          parameterType: STRUCT
+        production_metrics:
+          parameterType: STRUCT
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-compare-with-baseline-3:
+    executorLabel: exec-compare-with-baseline-3
+    inputDefinitions:
+      parameters:
+        baseline_status:
+          parameterType: STRING
+        metric_name:
+          defaultValue: test_f1_score
+          isOptional: true
+          parameterType: STRING
+        new_model_metrics:
+          parameterType: STRUCT
+        production_metrics:
+          parameterType: STRUCT
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-compare-with-baseline-4:
+    executorLabel: exec-compare-with-baseline-4
+    inputDefinitions:
+      parameters:
+        baseline_status:
+          parameterType: STRING
+        metric_name:
+          defaultValue: test_f1_score
+          isOptional: true
+          parameterType: STRING
+        new_model_metrics:
+          parameterType: STRUCT
+        production_metrics:
+          parameterType: STRUCT
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
   comp-condition-1:
+    dag:
+      tasks:
+        condition-branches-2:
+          componentRef:
+            name: comp-condition-branches-2
+          inputs:
+            artifacts:
+              pipelinechannel--download-production-model-production_model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--preprocess-and-split-test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+              pipelinechannel--train-rf-model_out:
+                componentInputArtifact: pipelinechannel--train-rf-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-rf-metrics:
+                componentInputParameter: pipelinechannel--predict-rf-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-branches-2
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        pipelinechannel--train-rf-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-rf-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-10:
+    dag:
+      tasks:
+        compare-with-baseline-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-compare-with-baseline-3
+          dependentTasks:
+          - evaluate-production-model-2
+          inputs:
+            parameters:
+              baseline_status:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              new_model_metrics:
+                componentInputParameter: pipelinechannel--predict-lr-metrics
+              production_metrics:
+                taskOutputParameter:
+                  outputParameterKey: metrics
+                  producerTask: evaluate-production-model-2
+          taskInfo:
+            name: compare-with-baseline-3
+        condition-9:
+          componentRef:
+            name: comp-condition-9
+          dependentTasks:
+          - compare-with-baseline-3
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-lr-model_out:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--compare-with-baseline-3-Output:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: compare-with-baseline-3
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-9
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--compare-with-baseline-3-Output']
+              == 'DEPLOY'
+        evaluate-production-model-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-evaluate-production-model-2
+          inputs:
+            artifacts:
+              model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+          taskInfo:
+            name: evaluate-production-model-2
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        pipelinechannel--train-lr-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-lr-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-11:
+    dag:
+      tasks:
+        compare-with-baseline-4:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-compare-with-baseline-4
+          inputs:
+            parameters:
+              baseline_status:
+                runtimeValue:
+                  constant: NO_BASELINE
+              new_model_metrics:
+                componentInputParameter: pipelinechannel--predict-lr-metrics
+              production_metrics:
+                runtimeValue:
+                  constant:
+                    test_f1_score: 0.0
+          taskInfo:
+            name: compare-with-baseline-4
+        condition-12:
+          componentRef:
+            name: comp-condition-12
+          dependentTasks:
+          - compare-with-baseline-4
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-lr-model_out:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--compare-with-baseline-4-Output:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: compare-with-baseline-4
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-12
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--compare-with-baseline-4-Output']
+              == 'DEPLOY'
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--train-lr-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-lr-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-12:
+    dag:
+      tasks:
+        upload-to-gcs-7:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-to-gcs-7
+          inputs:
+            artifacts:
+              artifact:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              bucket_name:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-to-gcs-7
+        upload-to-gcs-8:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-to-gcs-8
+          inputs:
+            artifacts:
+              artifact:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+            parameters:
+              bucket_name:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-to-gcs-8
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--train-lr-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--compare-with-baseline-4-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-3:
     dag:
       tasks:
         upload-to-gcs:
@@ -66,11 +416,179 @@ components:
       parameters:
         pipelinechannel--compare-models-Output:
           parameterType: STRING
+        pipelinechannel--compare-with-baseline-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
         pipelinechannel--model_repo:
           parameterType: STRING
         pipelinechannel--project_id:
           parameterType: STRING
-  comp-condition-2:
+  comp-condition-4:
+    dag:
+      tasks:
+        compare-with-baseline:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-compare-with-baseline
+          dependentTasks:
+          - evaluate-production-model
+          inputs:
+            parameters:
+              baseline_status:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              new_model_metrics:
+                componentInputParameter: pipelinechannel--predict-rf-metrics
+              production_metrics:
+                taskOutputParameter:
+                  outputParameterKey: metrics
+                  producerTask: evaluate-production-model
+          taskInfo:
+            name: compare-with-baseline
+        condition-3:
+          componentRef:
+            name: comp-condition-3
+          dependentTasks:
+          - compare-with-baseline
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-rf-model_out:
+                componentInputArtifact: pipelinechannel--train-rf-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--compare-with-baseline-Output:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: compare-with-baseline
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-3
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--compare-with-baseline-Output']
+              == 'DEPLOY'
+        evaluate-production-model:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-evaluate-production-model
+          inputs:
+            artifacts:
+              model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+          taskInfo:
+            name: evaluate-production-model
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        pipelinechannel--train-rf-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-rf-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-5:
+    dag:
+      tasks:
+        compare-with-baseline-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-compare-with-baseline-2
+          inputs:
+            parameters:
+              baseline_status:
+                runtimeValue:
+                  constant: NO_BASELINE
+              new_model_metrics:
+                componentInputParameter: pipelinechannel--predict-rf-metrics
+              production_metrics:
+                runtimeValue:
+                  constant:
+                    test_f1_score: 0.0
+          taskInfo:
+            name: compare-with-baseline-2
+        condition-6:
+          componentRef:
+            name: comp-condition-6
+          dependentTasks:
+          - compare-with-baseline-2
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-rf-model_out:
+                componentInputArtifact: pipelinechannel--train-rf-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--compare-with-baseline-2-Output:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: compare-with-baseline-2
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-6
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--compare-with-baseline-2-Output']
+              == 'DEPLOY'
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--train-rf-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-rf-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-6:
     dag:
       tasks:
         upload-to-gcs-3:
@@ -81,7 +599,7 @@ components:
           inputs:
             artifacts:
               artifact:
-                componentInputArtifact: pipelinechannel--train-lr-model_out
+                componentInputArtifact: pipelinechannel--train-rf-model_out
             parameters:
               bucket_name:
                 componentInputParameter: pipelinechannel--model_repo
@@ -111,6 +629,64 @@ components:
           artifactType:
             schemaTitle: system.Model
             schemaVersion: 0.0.1
+        pipelinechannel--train-rf-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--compare-with-baseline-2-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-7:
+    dag:
+      tasks:
+        condition-branches-8:
+          componentRef:
+            name: comp-condition-branches-8
+          inputs:
+            artifacts:
+              pipelinechannel--download-production-model-production_model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--preprocess-and-split-test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+              pipelinechannel--train-lr-model_out:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-lr-metrics:
+                componentInputParameter: pipelinechannel--predict-lr-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-branches-8
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
         pipelinechannel--train-lr-model_out:
           artifactType:
             schemaTitle: system.Model
@@ -118,8 +694,240 @@ components:
       parameters:
         pipelinechannel--compare-models-Output:
           parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
         pipelinechannel--model_repo:
           parameterType: STRING
+        pipelinechannel--predict-lr-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-9:
+    dag:
+      tasks:
+        upload-to-gcs-5:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-to-gcs-5
+          inputs:
+            artifacts:
+              artifact:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              bucket_name:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-to-gcs-5
+        upload-to-gcs-6:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-to-gcs-6
+          inputs:
+            artifacts:
+              artifact:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+            parameters:
+              bucket_name:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-to-gcs-6
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--train-lr-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--compare-with-baseline-3-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-branches-2:
+    dag:
+      tasks:
+        condition-4:
+          componentRef:
+            name: comp-condition-4
+          inputs:
+            artifacts:
+              pipelinechannel--download-production-model-production_model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--preprocess-and-split-test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+              pipelinechannel--train-rf-model_out:
+                componentInputArtifact: pipelinechannel--train-rf-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-rf-metrics:
+                componentInputParameter: pipelinechannel--predict-rf-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-4
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--download-production-model-Output']
+              == 'BASELINE_EXISTS'
+        condition-5:
+          componentRef:
+            name: comp-condition-5
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-rf-model_out:
+                componentInputArtifact: pipelinechannel--train-rf-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-rf-metrics:
+                componentInputParameter: pipelinechannel--predict-rf-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-5
+          triggerPolicy:
+            condition: '!(inputs.parameter_values[''pipelinechannel--download-production-model-Output'']
+              == ''BASELINE_EXISTS'')'
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        pipelinechannel--train-rf-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-rf-metrics:
+          parameterType: STRUCT
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-branches-8:
+    dag:
+      tasks:
+        condition-10:
+          componentRef:
+            name: comp-condition-10
+          inputs:
+            artifacts:
+              pipelinechannel--download-production-model-production_model:
+                componentInputArtifact: pipelinechannel--download-production-model-production_model
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--preprocess-and-split-test_data:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-test_data
+              pipelinechannel--train-lr-model_out:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-lr-metrics:
+                componentInputParameter: pipelinechannel--predict-lr-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-10
+          triggerPolicy:
+            condition: inputs.parameter_values['pipelinechannel--download-production-model-Output']
+              == 'BASELINE_EXISTS'
+        condition-11:
+          componentRef:
+            name: comp-condition-11
+          inputs:
+            artifacts:
+              pipelinechannel--preprocess-and-split-scaler_out:
+                componentInputArtifact: pipelinechannel--preprocess-and-split-scaler_out
+              pipelinechannel--train-lr-model_out:
+                componentInputArtifact: pipelinechannel--train-lr-model_out
+            parameters:
+              pipelinechannel--compare-models-Output:
+                componentInputParameter: pipelinechannel--compare-models-Output
+              pipelinechannel--download-production-model-Output:
+                componentInputParameter: pipelinechannel--download-production-model-Output
+              pipelinechannel--model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              pipelinechannel--predict-lr-metrics:
+                componentInputParameter: pipelinechannel--predict-lr-metrics
+              pipelinechannel--project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: condition-11
+          triggerPolicy:
+            condition: '!(inputs.parameter_values[''pipelinechannel--download-production-model-Output'']
+              == ''BASELINE_EXISTS'')'
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--download-production-model-production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-scaler_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        pipelinechannel--preprocess-and-split-test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        pipelinechannel--train-lr-model_out:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--compare-models-Output:
+          parameterType: STRING
+        pipelinechannel--download-production-model-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--predict-lr-metrics:
+          parameterType: STRUCT
         pipelinechannel--project_id:
           parameterType: STRING
   comp-download-data:
@@ -138,6 +946,55 @@ components:
           artifactType:
             schemaTitle: system.Dataset
             schemaVersion: 0.0.1
+  comp-download-production-model:
+    executorLabel: exec-download-production-model
+    inputDefinitions:
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      artifacts:
+        production_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-evaluate-production-model:
+    executorLabel: exec-evaluate-production-model
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      parameters:
+        metrics:
+          parameterType: STRUCT
+  comp-evaluate-production-model-2:
+    executorLabel: exec-evaluate-production-model-2
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        test_data:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      parameters:
+        metrics:
+          parameterType: STRUCT
   comp-predict-lr:
     executorLabel: exec-predict-lr
     inputDefinitions:
@@ -288,6 +1145,58 @@ components:
           parameterType: STRING
         project_id:
           parameterType: STRING
+  comp-upload-to-gcs-5:
+    executorLabel: exec-upload-to-gcs-5
+    inputDefinitions:
+      artifacts:
+        artifact:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+  comp-upload-to-gcs-6:
+    executorLabel: exec-upload-to-gcs-6
+    inputDefinitions:
+      artifacts:
+        artifact:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+  comp-upload-to-gcs-7:
+    executorLabel: exec-upload-to-gcs-7
+    inputDefinitions:
+      artifacts:
+        artifact:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+  comp-upload-to-gcs-8:
+    executorLabel: exec-upload-to-gcs-8
+    inputDefinitions:
+      artifacts:
+        artifact:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
 deploymentSpec:
   executors:
     exec-compare-models:
@@ -327,6 +1236,218 @@ deploymentSpec:
           \        logging.info(f\"Winner: Logistic Regression (F1={lr_f1:.3f})\"\
           )\n        return \"LR\"\n\n"
         image: python:3.10.7-slim
+    exec-compare-with-baseline:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - compare_with_baseline
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef compare_with_baseline(\n    new_model_metrics: dict,\n    production_metrics:\
+          \ dict,\n    baseline_status: str,\n    metric_name: str = \"test_f1_score\"\
+          \n) -> str:\n    '''\n    Compare new model against production baseline.\n\
+          \    Returns \"DEPLOY\" or \"REJECT\"\n    '''\n    import logging\n   \
+          \ import sys\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    # If no baseline exists, deploy new model\n    if baseline_status\
+          \ == \"NO_BASELINE\":\n        logging.info(\"DECISION: DEPLOY - No baseline\
+          \ model exists (first deployment)\")\n        return \"DEPLOY\"\n\n    #\
+          \ Extract scores\n    production_score = production_metrics.get(metric_name,\
+          \ 0)\n    new_score = new_model_metrics.get(metric_name, 0)\n\n    improvement\
+          \ = new_score - production_score\n    improvement_pct = (improvement / production_score\
+          \ * 100) if production_score > 0 else 0\n\n    # Minimum acceptable: 98%\
+          \ of production (allow 2% degradation)\n    min_acceptable = 0.98 * production_score\n\
+          \n    logging.info(\"=\" * 60)\n    logging.info(\"BASELINE COMPARISON\"\
+          )\n    logging.info(\"=\" * 60)\n    logging.info(f\"Production Model {metric_name}:\
+          \ {production_score:.4f}\")\n    logging.info(f\"New Model {metric_name}:\
+          \ {new_score:.4f}\")\n    logging.info(f\"Improvement: {improvement:+.4f}\
+          \ ({improvement_pct:+.2f}%)\")\n    logging.info(\"=\" * 60)\n\n    # Decision:\
+          \ new model must be >= production model\n    if new_score >= min_acceptable:\n\
+          \        logging.info(\"DECISION: DEPLOY\")\n        logging.info(\"   New\
+          \ model performs equal to or better than production\")\n        return \"\
+          DEPLOY\"\n    else:\n        logging.warning(\"DECISION: REJECT\")\n   \
+          \     logging.warning(\"   New model worse than production baseline\")\n\
+          \        logging.warning(f\"   Required: >= {production_score:.4f}\")\n\
+          \        logging.warning(f\"   Achieved: {new_score:.4f}\")\n        return\
+          \ \"REJECT\"\n\n"
+        image: python:3.10.7-slim
+    exec-compare-with-baseline-2:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - compare_with_baseline
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef compare_with_baseline(\n    new_model_metrics: dict,\n    production_metrics:\
+          \ dict,\n    baseline_status: str,\n    metric_name: str = \"test_f1_score\"\
+          \n) -> str:\n    '''\n    Compare new model against production baseline.\n\
+          \    Returns \"DEPLOY\" or \"REJECT\"\n    '''\n    import logging\n   \
+          \ import sys\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    # If no baseline exists, deploy new model\n    if baseline_status\
+          \ == \"NO_BASELINE\":\n        logging.info(\"DECISION: DEPLOY - No baseline\
+          \ model exists (first deployment)\")\n        return \"DEPLOY\"\n\n    #\
+          \ Extract scores\n    production_score = production_metrics.get(metric_name,\
+          \ 0)\n    new_score = new_model_metrics.get(metric_name, 0)\n\n    improvement\
+          \ = new_score - production_score\n    improvement_pct = (improvement / production_score\
+          \ * 100) if production_score > 0 else 0\n\n    # Minimum acceptable: 98%\
+          \ of production (allow 2% degradation)\n    min_acceptable = 0.98 * production_score\n\
+          \n    logging.info(\"=\" * 60)\n    logging.info(\"BASELINE COMPARISON\"\
+          )\n    logging.info(\"=\" * 60)\n    logging.info(f\"Production Model {metric_name}:\
+          \ {production_score:.4f}\")\n    logging.info(f\"New Model {metric_name}:\
+          \ {new_score:.4f}\")\n    logging.info(f\"Improvement: {improvement:+.4f}\
+          \ ({improvement_pct:+.2f}%)\")\n    logging.info(\"=\" * 60)\n\n    # Decision:\
+          \ new model must be >= production model\n    if new_score >= min_acceptable:\n\
+          \        logging.info(\"DECISION: DEPLOY\")\n        logging.info(\"   New\
+          \ model performs equal to or better than production\")\n        return \"\
+          DEPLOY\"\n    else:\n        logging.warning(\"DECISION: REJECT\")\n   \
+          \     logging.warning(\"   New model worse than production baseline\")\n\
+          \        logging.warning(f\"   Required: >= {production_score:.4f}\")\n\
+          \        logging.warning(f\"   Achieved: {new_score:.4f}\")\n        return\
+          \ \"REJECT\"\n\n"
+        image: python:3.10.7-slim
+    exec-compare-with-baseline-3:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - compare_with_baseline
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef compare_with_baseline(\n    new_model_metrics: dict,\n    production_metrics:\
+          \ dict,\n    baseline_status: str,\n    metric_name: str = \"test_f1_score\"\
+          \n) -> str:\n    '''\n    Compare new model against production baseline.\n\
+          \    Returns \"DEPLOY\" or \"REJECT\"\n    '''\n    import logging\n   \
+          \ import sys\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    # If no baseline exists, deploy new model\n    if baseline_status\
+          \ == \"NO_BASELINE\":\n        logging.info(\"DECISION: DEPLOY - No baseline\
+          \ model exists (first deployment)\")\n        return \"DEPLOY\"\n\n    #\
+          \ Extract scores\n    production_score = production_metrics.get(metric_name,\
+          \ 0)\n    new_score = new_model_metrics.get(metric_name, 0)\n\n    improvement\
+          \ = new_score - production_score\n    improvement_pct = (improvement / production_score\
+          \ * 100) if production_score > 0 else 0\n\n    # Minimum acceptable: 98%\
+          \ of production (allow 2% degradation)\n    min_acceptable = 0.98 * production_score\n\
+          \n    logging.info(\"=\" * 60)\n    logging.info(\"BASELINE COMPARISON\"\
+          )\n    logging.info(\"=\" * 60)\n    logging.info(f\"Production Model {metric_name}:\
+          \ {production_score:.4f}\")\n    logging.info(f\"New Model {metric_name}:\
+          \ {new_score:.4f}\")\n    logging.info(f\"Improvement: {improvement:+.4f}\
+          \ ({improvement_pct:+.2f}%)\")\n    logging.info(\"=\" * 60)\n\n    # Decision:\
+          \ new model must be >= production model\n    if new_score >= min_acceptable:\n\
+          \        logging.info(\"DECISION: DEPLOY\")\n        logging.info(\"   New\
+          \ model performs equal to or better than production\")\n        return \"\
+          DEPLOY\"\n    else:\n        logging.warning(\"DECISION: REJECT\")\n   \
+          \     logging.warning(\"   New model worse than production baseline\")\n\
+          \        logging.warning(f\"   Required: >= {production_score:.4f}\")\n\
+          \        logging.warning(f\"   Achieved: {new_score:.4f}\")\n        return\
+          \ \"REJECT\"\n\n"
+        image: python:3.10.7-slim
+    exec-compare-with-baseline-4:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - compare_with_baseline
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef compare_with_baseline(\n    new_model_metrics: dict,\n    production_metrics:\
+          \ dict,\n    baseline_status: str,\n    metric_name: str = \"test_f1_score\"\
+          \n) -> str:\n    '''\n    Compare new model against production baseline.\n\
+          \    Returns \"DEPLOY\" or \"REJECT\"\n    '''\n    import logging\n   \
+          \ import sys\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    # If no baseline exists, deploy new model\n    if baseline_status\
+          \ == \"NO_BASELINE\":\n        logging.info(\"DECISION: DEPLOY - No baseline\
+          \ model exists (first deployment)\")\n        return \"DEPLOY\"\n\n    #\
+          \ Extract scores\n    production_score = production_metrics.get(metric_name,\
+          \ 0)\n    new_score = new_model_metrics.get(metric_name, 0)\n\n    improvement\
+          \ = new_score - production_score\n    improvement_pct = (improvement / production_score\
+          \ * 100) if production_score > 0 else 0\n\n    # Minimum acceptable: 98%\
+          \ of production (allow 2% degradation)\n    min_acceptable = 0.98 * production_score\n\
+          \n    logging.info(\"=\" * 60)\n    logging.info(\"BASELINE COMPARISON\"\
+          )\n    logging.info(\"=\" * 60)\n    logging.info(f\"Production Model {metric_name}:\
+          \ {production_score:.4f}\")\n    logging.info(f\"New Model {metric_name}:\
+          \ {new_score:.4f}\")\n    logging.info(f\"Improvement: {improvement:+.4f}\
+          \ ({improvement_pct:+.2f}%)\")\n    logging.info(\"=\" * 60)\n\n    # Decision:\
+          \ new model must be >= production model\n    if new_score >= min_acceptable:\n\
+          \        logging.info(\"DECISION: DEPLOY\")\n        logging.info(\"   New\
+          \ model performs equal to or better than production\")\n        return \"\
+          DEPLOY\"\n    else:\n        logging.warning(\"DECISION: REJECT\")\n   \
+          \     logging.warning(\"   New model worse than production baseline\")\n\
+          \        logging.warning(f\"   Required: >= {production_score:.4f}\")\n\
+          \        logging.warning(f\"   Achieved: {new_score:.4f}\")\n        return\
+          \ \"REJECT\"\n\n"
+        image: python:3.10.7-slim
     exec-download-data:
       container:
         args:
@@ -361,6 +1482,134 @@ deploymentSpec:
           \    bucket = client.bucket(bucket)\n    blob = bucket.blob(file_name)\n\
           \    blob.download_to_filename(dataset.path + \".csv\")\n    logging.info(f'Downloaded\
           \ {file_name} from gs://{bucket}/')\n\n"
+        image: python:3.10.7-slim
+    exec-download-production-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - download_production_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef download_production_model(\n    project_id: str, \n    bucket_name:\
+          \ str,\n    production_model: Output[Model]\n) -> str:\n    '''Download\
+          \ current production model from GCS (if exists)'''\n    from google.cloud\
+          \ import storage\n    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket_name)\n\n    # Check if production model\
+          \ exists\n    blob = bucket.blob(\"best_model.pkl\")\n\n    if not blob.exists():\n\
+          \        logging.warning(\"No production model found. This is the first\
+          \ deployment.\")\n        return \"NO_BASELINE\"\n\n    # Download production\
+          \ model\n    blob.download_to_filename(production_model.path + \".pkl\"\
+          )\n    production_model.metadata[\"file_type\"] = \".pkl\"\n    production_model.metadata[\"\
+          algo\"] = \"production_model\"\n\n    logging.info(f\"\u2705 Downloaded\
+          \ production model from gs://{bucket_name}/best_model.pkl\")\n    return\
+          \ \"BASELINE_EXISTS\"\n\n"
+        image: python:3.10.7-slim
+    exec-evaluate-production-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - evaluate_production_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn==1.3.2'\
+          \ 'joblib'  &&  python3 -m pip install --quiet --no-warn-script-location\
+          \ 'kfp==2.14.6' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"\
+          3.9\"' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef evaluate_production_model(\n    model: Input[Model],\n    test_data:\
+          \ Input[Dataset]\n) -> NamedTuple('outputs', metrics=dict):\n    '''Evaluate\
+          \ production model on test set'''\n    import pandas as pd\n    import joblib\n\
+          \    from sklearn.metrics import accuracy_score, f1_score, classification_report\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    # Load test data\n    df_test = pd.read_csv(test_data.path\
+          \ + \".csv\")\n    X_test = df_test.drop(columns=[\"is_churned\"])\n   \
+          \ y_test = df_test[\"is_churned\"]\n\n    # Load model\n    production_model\
+          \ = joblib.load(model.path + \".pkl\")\n\n    # Predict\n    y_pred = production_model.predict(X_test)\n\
+          \n    # Metrics\n    accuracy = accuracy_score(y_test, y_pred)\n    f1 =\
+          \ f1_score(y_test, y_pred)\n\n    metrics_dict = {\n        \"test_accuracy\"\
+          : float(accuracy),\n        \"test_f1_score\": float(f1)\n    }\n    logging.info(f\"\
+          Production Model Test Metrics: {metrics_dict}\")\n    logging.info(f\"\\\
+          n{classification_report(y_test, y_pred)}\")\n\n    outputs = NamedTuple('outputs',\
+          \ metrics=dict)\n    return outputs(metrics_dict)\n\n"
+        image: python:3.10.7-slim
+    exec-evaluate-production-model-2:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - evaluate_production_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn==1.3.2'\
+          \ 'joblib'  &&  python3 -m pip install --quiet --no-warn-script-location\
+          \ 'kfp==2.14.6' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"\
+          3.9\"' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef evaluate_production_model(\n    model: Input[Model],\n    test_data:\
+          \ Input[Dataset]\n) -> NamedTuple('outputs', metrics=dict):\n    '''Evaluate\
+          \ production model on test set'''\n    import pandas as pd\n    import joblib\n\
+          \    from sklearn.metrics import accuracy_score, f1_score, classification_report\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    # Load test data\n    df_test = pd.read_csv(test_data.path\
+          \ + \".csv\")\n    X_test = df_test.drop(columns=[\"is_churned\"])\n   \
+          \ y_test = df_test[\"is_churned\"]\n\n    # Load model\n    production_model\
+          \ = joblib.load(model.path + \".pkl\")\n\n    # Predict\n    y_pred = production_model.predict(X_test)\n\
+          \n    # Metrics\n    accuracy = accuracy_score(y_test, y_pred)\n    f1 =\
+          \ f1_score(y_test, y_pred)\n\n    metrics_dict = {\n        \"test_accuracy\"\
+          : float(accuracy),\n        \"test_f1_score\": float(f1)\n    }\n    logging.info(f\"\
+          Production Model Test Metrics: {metrics_dict}\")\n    logging.info(f\"\\\
+          n{classification_report(y_test, y_pred)}\")\n\n    outputs = NamedTuple('outputs',\
+          \ metrics=dict)\n    return outputs(metrics_dict)\n\n"
         image: python:3.10.7-slim
     exec-predict-lr:
       container:
@@ -636,7 +1885,7 @@ deploymentSpec:
           \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
           algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
           \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
-          ])\n\n    logging.info(f\"\u2705 Uploaded {file_name} to gs://{bucket_name}/\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
           )\n\n"
         image: python:3.10.7-slim
     exec-upload-to-gcs-2:
@@ -673,7 +1922,7 @@ deploymentSpec:
           \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
           algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
           \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
-          ])\n\n    logging.info(f\"\u2705 Uploaded {file_name} to gs://{bucket_name}/\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
           )\n\n"
         image: python:3.10.7-slim
     exec-upload-to-gcs-3:
@@ -710,7 +1959,7 @@ deploymentSpec:
           \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
           algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
           \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
-          ])\n\n    logging.info(f\"\u2705 Uploaded {file_name} to gs://{bucket_name}/\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
           )\n\n"
         image: python:3.10.7-slim
     exec-upload-to-gcs-4:
@@ -747,7 +1996,155 @@ deploymentSpec:
           \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
           algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
           \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
-          ])\n\n    logging.info(f\"\u2705 Uploaded {file_name} to gs://{bucket_name}/\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
+          )\n\n"
+        image: python:3.10.7-slim
+    exec-upload-to-gcs-5:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_to_gcs(project_id: str, bucket_name: str, artifact: Input[Model]):\n\
+          \    '''Upload artifact to GCS'''\n    from google.cloud import storage\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
+          algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
+          \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
+          )\n\n"
+        image: python:3.10.7-slim
+    exec-upload-to-gcs-6:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_to_gcs(project_id: str, bucket_name: str, artifact: Input[Model]):\n\
+          \    '''Upload artifact to GCS'''\n    from google.cloud import storage\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
+          algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
+          \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
+          )\n\n"
+        image: python:3.10.7-slim
+    exec-upload-to-gcs-7:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_to_gcs(project_id: str, bucket_name: str, artifact: Input[Model]):\n\
+          \    '''Upload artifact to GCS'''\n    from google.cloud import storage\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
+          algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
+          \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
+          )\n\n"
+        image: python:3.10.7-slim
+    exec-upload-to-gcs-8:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.6'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_to_gcs(project_id: str, bucket_name: str, artifact: Input[Model]):\n\
+          \    '''Upload artifact to GCS'''\n    from google.cloud import storage\n\
+          \    import logging\n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)\n\n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket_name)\n\n    file_name = artifact.metadata[\"\
+          algo\"] + artifact.metadata[\"file_type\"]\n    blob = bucket.blob(file_name)\n\
+          \    blob.upload_from_filename(artifact.path + artifact.metadata[\"file_type\"\
+          ])\n\n    logging.info(f\"Uploaded {file_name} to gs://{bucket_name}/\"\
           )\n\n"
         image: python:3.10.7-slim
 pipelineInfo:
@@ -780,13 +2177,23 @@ root:
           name: comp-condition-1
         dependentTasks:
         - compare-models
+        - download-production-model
+        - predict-rf
         - preprocess-and-split
         - train-rf
         inputs:
           artifacts:
+            pipelinechannel--download-production-model-production_model:
+              taskOutputArtifact:
+                outputArtifactKey: production_model
+                producerTask: download-production-model
             pipelinechannel--preprocess-and-split-scaler_out:
               taskOutputArtifact:
                 outputArtifactKey: scaler_out
+                producerTask: preprocess-and-split
+            pipelinechannel--preprocess-and-split-test_data:
+              taskOutputArtifact:
+                outputArtifactKey: test_data
                 producerTask: preprocess-and-split
             pipelinechannel--train-rf-model_out:
               taskOutputArtifact:
@@ -797,8 +2204,16 @@ root:
               taskOutputParameter:
                 outputParameterKey: Output
                 producerTask: compare-models
+            pipelinechannel--download-production-model-Output:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: download-production-model
             pipelinechannel--model_repo:
               componentInputParameter: model_repo
+            pipelinechannel--predict-rf-metrics:
+              taskOutputParameter:
+                outputParameterKey: metrics
+                producerTask: predict-rf
             pipelinechannel--project_id:
               componentInputParameter: project_id
         taskInfo:
@@ -806,18 +2221,28 @@ root:
         triggerPolicy:
           condition: inputs.parameter_values['pipelinechannel--compare-models-Output']
             == 'RF'
-      condition-2:
+      condition-7:
         componentRef:
-          name: comp-condition-2
+          name: comp-condition-7
         dependentTasks:
         - compare-models
+        - download-production-model
+        - predict-lr
         - preprocess-and-split
         - train-lr
         inputs:
           artifacts:
+            pipelinechannel--download-production-model-production_model:
+              taskOutputArtifact:
+                outputArtifactKey: production_model
+                producerTask: download-production-model
             pipelinechannel--preprocess-and-split-scaler_out:
               taskOutputArtifact:
                 outputArtifactKey: scaler_out
+                producerTask: preprocess-and-split
+            pipelinechannel--preprocess-and-split-test_data:
+              taskOutputArtifact:
+                outputArtifactKey: test_data
                 producerTask: preprocess-and-split
             pipelinechannel--train-lr-model_out:
               taskOutputArtifact:
@@ -828,12 +2253,20 @@ root:
               taskOutputParameter:
                 outputParameterKey: Output
                 producerTask: compare-models
+            pipelinechannel--download-production-model-Output:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: download-production-model
             pipelinechannel--model_repo:
               componentInputParameter: model_repo
+            pipelinechannel--predict-lr-metrics:
+              taskOutputParameter:
+                outputParameterKey: metrics
+                producerTask: predict-lr
             pipelinechannel--project_id:
               componentInputParameter: project_id
         taskInfo:
-          name: condition-2
+          name: condition-7
         triggerPolicy:
           condition: inputs.parameter_values['pipelinechannel--compare-models-Output']
             == 'LR'
@@ -852,6 +2285,21 @@ root:
               componentInputParameter: project_id
         taskInfo:
           name: download-data
+      download-production-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-download-production-model
+        dependentTasks:
+        - compare-models
+        inputs:
+          parameters:
+            bucket_name:
+              componentInputParameter: model_repo
+            project_id:
+              componentInputParameter: project_id
+        taskInfo:
+          name: download-production-model
       predict-lr:
         cachingOptions:
           enableCache: true

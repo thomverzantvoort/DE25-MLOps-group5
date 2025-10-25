@@ -1,0 +1,75 @@
+---
+title: "Spotify Churn Prediction, Design and Implementation of an MLOps System
+"
+author: "Group 5"
+subtitle: "Rick de Rijk, Thom Verzantvoort, Tycho van Rooij, Stefan Vonk, Gilbert Laanen"
+format: pdf
+geometry:
+      - margin=2cm
+editor: visual
+toc: true
+lof: true
+number-sections: true
+---
+
+## **Overview of the ML Application**
+
+### **Use Case Description **
+
+### **Business Goal and ML Objective**
+
+### **MLOps Requirements**
+
+## **Design and Implementation of the MLOps System**
+
+### **System Architecture **
+
+### **Machine Learning Pipeline (Vertex AI) **
+
+### **Prediction and Serving Components **
+
+### **CI/CD Pipelines (Cloud Build)**
+
+### **Pipeline Executor Container **
+
+## 3. Reflection on Design and Implementation
+
+### **Alternative Designs**
+
+### **Improvements and Scalability**
+
+### **Reflection on Implementation Process**
+
+## **Individual Contributions** 
+
+The Spotify churn-prediction MLOps project was completed collaboratively by five group members, each responsible for specific technical and organizational components of the system. Clear task allocation ensured efficient workflow management and consistent integration across all modules.
+
+**Rick de Rijk:** led the development of the Vertex AI pipeline, including the design of data preprocessing, training, and evaluation components. He implemented parameter tuning within the pipeline configuration and ensured that the pipeline artifacts and outputs were correctly managed in Google Cloud Storage.
+
+**Thom Verzantvoort:** was responsible for the continuous integration and deployment setup. He configured the Cloud Build workflows, managed trigger automation, and integrated the pipeline-executor container to enable fully automated retraining and redeployment of the models.
+
+**Tycho van Rooij:** focused on the implementation and refinement of the Prediction API and UI. He developed the RESTful interface, ensured end-to-end communication between the API and the front-end, and validated the correct model serving on Cloud Run.
+
+**Stefan Vonk:** contributed to system testing, deployment verification, and the documentation of the overall MLOps workflow. He ensured that all services functioned correctly within the integrated cloud environment and supported debugging during the deployment phase.
+
+**Gilbert Laanen:** coordinated report structuring and contributed to the technical writing, integrating system descriptions, pipeline explanations, and architectural visualizations into a coherent final document.
+
+Through this structured division of responsibilities, the team achieved an automated, reproducible, and scalable MLOps solution that successfully integrates data processing, model training, continuous deployment, and user-facing prediction capabilities.
+
+## **Technology Statement**
+
+During the preparation of this assignment, the group used **ChatGPT (GPT-5) & Claude** as a support tool to improve documentation quality, resolve technical issues, and enhance writing clarity. The tool was specifically applied to assist in:
+
+-   explaining and documenting the system design and CI/CD architecture,\
+
+-   refining the structure and clarity of written report sections, and\
+
+-   providing feedback on code documentation and debugging of Cloud Build and Vertex AI configurations.
+
+All AI-assisted outputs were critically reviewed, verified, and edited by the group members, **Rick de Rijk, Thom Verzantvoort, Tycho van Rooij, Stefan Vonk, and Gilbert Laanen**, to ensure correctness, academic integrity, and compliance with the course’s AI-Index Level 4 guidelines.
+
+ChatGPT was used strictly as a supportive assistant, not as a content generator. The final analyses, designs, and interpretations were produced, validated, and approved by the team. Consequently, the authors take full responsibility for the accuracy and originality of all content included in this report.
+
+## References
+
+## Appendix
