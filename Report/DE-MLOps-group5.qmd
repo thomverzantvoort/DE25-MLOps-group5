@@ -68,7 +68,7 @@ This automated approach ensures continuous model improvement while maintaining p
 
 ### **Prediction and Serving Components**
 
-The serving layer comprises two Flask-based components that enable end-to-end prediction delivery. The Prediction API loads the most recent model from the /models directory, exposes a /predict endpoint for JSON requests, and returns churn predictions in real time. The Prediction UI, illustrated in @fig-pre-ui-input and @fig-prediction-ui-response, provides a user-friendly web interface where input features can be entered and results are visualized. It communicates with the API via the PREDICTOR_API environment variable. Both components are containerized and deployed to Google Cloud Run as spotify-prediction-api:latest and spotify-prediction-ui:latest, ensuring scalable and consistent serving across environments.
+The serving layer comprises two Flask-based components that enable end-to-end prediction delivery. The Prediction API loads the most recent model from the /models directory, exposes a /predict endpoint for JSON requests, and returns churn predictions in real time. The Prediction UI, illustrated in @fig-pre-ui-input and @fig-prediction-ui-response, provides a user-friendly web interface where input features can be entered and results are visualized The deployed version of the Prediction UI can be accessed here: <https://spotify-prediction-ui-951195898169.us-central1.run.app/checkchurn>. It communicates with the API via the PREDICTOR_API environment variable. Both components are containerized and deployed to Google Cloud Run as spotify-prediction-api:latest and spotify-prediction-ui:latest, ensuring scalable and consistent serving across environments.
 
 ### **CI/CD Pipelines (Cloud Build)**
 
