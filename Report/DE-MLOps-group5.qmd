@@ -152,7 +152,7 @@ Lauraalonso. (2025, 28 september). Spotify 2025 - EDA + prediction models. Kaggl
 
 ## Appendix {#sec-appendix}
 
-![](images/MLOps-Architecture.png){#fig-mlops-architecture}
+![MLOps Architecture](images/MLOps-Architecture.png){#fig-mlops-architecture}
 
 ![Vertex AI Pipeline](images/WhatsApp Image 2025-10-25 at 12.45.45.jpeg){#fig-vertex-ai}
 
